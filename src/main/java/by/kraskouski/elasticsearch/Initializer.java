@@ -1,12 +1,22 @@
 package by.kraskouski.elasticsearch;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.apache.http.HttpHost;
+import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.RestClientBuilder;
+import org.elasticsearch.client.RestHighLevelClient;
 
-@SpringBootApplication
+import java.io.IOException;
+
 public class Initializer {
 
-    public static void main(final String... args) {
-        SpringApplication.run(Initializer.class, args);
+    private static final RestHighLevelClient client;
+
+    static {
+        RestClientBuilder builder = RestClient.builder(new HttpHost("localhost", 9200, "http"));
+        client = new RestHighLevelClient(builder);
+    }
+
+    public static void main(final String... args) throws IOException {
+        client.close();
     }
 }
