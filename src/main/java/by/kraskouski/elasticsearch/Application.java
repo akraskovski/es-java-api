@@ -1,5 +1,6 @@
 package by.kraskouski.elasticsearch;
 
+import by.kraskouski.elasticsearch.api.AggregationApi;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
@@ -10,7 +11,7 @@ import java.io.IOException;
 /**
  * General bootstrap class.
  */
-public class Initializer {
+public class Application {
 
     private static final RestHighLevelClient CLIENT;
     private static final String AUTH = "Basic ZWxhc3RpYzohRTlnVTBAY05pcjBYXko3M1NyRQ==";
@@ -23,7 +24,8 @@ public class Initializer {
     }
 
     public static void main(final String... args) throws IOException {
-        new IndexApi(CLIENT, AUTH).exampleWithJsonRequest();
+//        new IndexApi(CLIENT, AUTH).exampleWithJsonRequest();
+        new AggregationApi(CLIENT, AUTH).metricsMaxAggregation();
         CLIENT.close();
     }
 }
