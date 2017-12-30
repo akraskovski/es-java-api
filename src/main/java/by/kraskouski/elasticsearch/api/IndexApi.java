@@ -1,4 +1,4 @@
-package by.kraskouski.elasticsearch;
+package by.kraskouski.elasticsearch.api;
 
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
