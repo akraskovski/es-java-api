@@ -13,6 +13,7 @@ import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.metrics.max.Max;
+import org.elasticsearch.search.aggregations.metrics.min.Min;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import java.io.IOException;
@@ -52,6 +53,32 @@ public class AggregationApi {
         final SearchResponse searchResponse = client.search(searchRequest, prepareAuthHeader());
         final double result = ((Max) searchResponse.getAggregations().get("age_aggr")).getValue();
         System.out.println("Max age from documents: " + result);
+    }
+
+    public void metricsDoubleAggregation() throws IOException {
+        final BulkRequest request = new BulkRequest();
+        request.add(new IndexRequest(index, type, "1")
+                .source(XContentType.JSON, "country", "Belarus", "age", 20));
+        request.add(new IndexRequest(index, type, "2")
+                .source(XContentType.JSON, "country", "Ukraine", "age", 30));
+        request.add(new IndexRequest(index, type, "3")
+                .source(XContentType.JSON, "country", "Poland", "age", 40));
+        request.setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE);
+        client.bulk(request, prepareAuthHeader());
+
+
+        final SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.aggregation(AggregationBuilders.max("max_age_aggr").field("age"));
+        searchSourceBuilder.aggregation(AggregationBuilders.min("min_age_aggr").field("age"));
+        searchSourceBuilder.query(QueryBuilders.matchAllQuery());
+
+        final SearchRequest searchRequest = new SearchRequest();
+        searchRequest.source(searchSourceBuilder);
+        final SearchResponse searchResponse = client.search(searchRequest, prepareAuthHeader());
+        final double resultMax = ((Max) searchResponse.getAggregations().get("max_age_aggr")).getValue();
+        final double resultMin = ((Min) searchResponse.getAggregations().get("min_age_aggr")).getValue();
+        System.out.println("Max age from documents: " + resultMax);
+        System.out.println("Min age from documents: " + resultMin);
     }
 
     private Header[] prepareAuthHeader() {
