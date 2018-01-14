@@ -33,6 +33,7 @@ public class Application {
     public static void main(final String... args) throws IOException {
         try {
             new IndexApi(CLIENT, INDEX, TYPE).exampleWithJsonRequest();
+            new GetApi(CLIENT, INDEX, TYPE).getRequest();
             new GetApi(CLIENT, INDEX, TYPE).getRequestInvalidIndex();
             new AggregationApi(CLIENT, INDEX, TYPE).metricsMaxAggregation();
         } finally {
